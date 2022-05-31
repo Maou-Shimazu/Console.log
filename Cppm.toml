@@ -1,0 +1,6 @@
+[project]
+version = "1.0.1"
+src = "src/main.cpp"
+edition = "2021"
+include = "include"
+name = "console_log"
