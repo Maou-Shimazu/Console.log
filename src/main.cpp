@@ -9,5 +9,6 @@ int main() {
     log("Error", ll::Error);
     log("Success", ll::Success);
     log("Default");
+    log("Example of a very long message.", ll::Info, Black);
     return 0;
 }
