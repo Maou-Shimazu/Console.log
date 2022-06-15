@@ -25,14 +25,19 @@ const std::string Reset = "\u001b[0m";
 const std::string Underline = "\u001b[4m";
 
 namespace Console {
-    enum class log_level: char { Info = '-', Warning = '!', Error = 'X', Success = '+' };
-
-    auto time_now() {
-        char b[80];
-        auto time = std::time(0);
-        std::tm buf = *localtime(&time);
-        strftime(b, sizeof(b), "%X", &buf);
-        std::cout << b;
+    enum class log_level : char {
+        Info = '-',
+        Warning = '!',
+        Error = 'X',
+        Success = '+',
+        Debug = '?'
+    };
+    
+    void time_now() {
+        auto now = std::chrono::system_clock::now();
+        std::time_t end_time = std::chrono::system_clock::to_time_t(now);
+        std::tm tn = *std::localtime(&end_time);
+        std::cout << std::put_time(&tn, "%X");
     }
 
     template <class T>
@@ -41,10 +46,21 @@ namespace Console {
              std::experimental::source_location const source =
                  std::experimental::source_location::current()) {
         switch (log_level_) {
-            case log_level::Info: if (color == Reset) color = Cyan; break;
-            case log_level::Warning: if (color == Reset) color = Yellow; break;
-            case log_level::Error: if (color == Reset) color = Red; break;
-            case log_level::Success: if (color == Reset) color = Green; break;
+        case log_level::Info:
+            if (color == Reset) color = Cyan;
+            break;
+        case log_level::Warning:
+            if (color == Reset) color = Yellow;
+            break;
+        case log_level::Error:
+            if (color == Reset) color = Red;
+            break;
+        case log_level::Success:
+            if (color == Reset) color = Green;
+            break;
+        case log_level::Debug:
+            if (color == Reset) color = Magenta;
+            break;
         }
 
         std::cout << color << "[" << static_cast<char>(log_level_) << "] ";

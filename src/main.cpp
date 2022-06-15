@@ -8,7 +8,9 @@ int main() {
     log("Warning", ll::Warning);
     log("Error", ll::Error);
     log("Success", ll::Success);
+    log("Debug", ll::Debug);
     log("Default");
-    log("Example of a very long message.", ll::Info, Black);
+    log("Example of a long message with a custom color, Black.", ll::Info, Black);
+
     return 0;
 }
