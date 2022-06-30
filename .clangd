@@ -1,0 +1,7 @@
+CompileFlags:                   
+  Add: [-xc++, -Wall, -std=c++17]
+
+InlayHints:
+  Enabled: Yes
+  ParameterNames: Yes
+  DeducedTypes: Yes
