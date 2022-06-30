@@ -1,2 +1,5 @@
-.vscode
-build
+*.exe
+*.obj
+*.o
+/.vscode
+/build
