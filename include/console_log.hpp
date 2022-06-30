@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using std::experimental::source_location;
 
@@ -24,15 +25,44 @@ const std::string White = "\u001b[37m";
 const std::string Reset = "\u001b[0m";
 const std::string Underline = "\u001b[4m";
 
-namespace Console {
-    enum class log_level : char {
+enum class log_level : char {
         Info = '-',
         Warning = '!',
         Error = 'X',
         Success = '+',
         Debug = '?'
     };
-    
+
+// TODO: shift formatting options from log to this class.
+class Format{
+public:
+    Format() = default;
+    template<typename T>
+    auto formatter(T content){
+        return content;
+    }
+    template<typename T>
+    static auto default_format(T content) {
+        return content;    
+    }
+};
+
+class Console {
+private:
+    std::string fileH;
+public:
+    Console() = default;
+    explicit Console(std::string file): fileH(std::move(file)) {
+        if (!std::filesystem::exists(this->fileH)) std::ofstream ost(this->fileH); 
+    }
+    template<typename T>
+    Console* log(T message, Format formatter = Format()){
+        std::ofstream ost(this->fileH);
+        ost << formatter.default_format(message) << "\n";
+        return this;
+    }
+}; // class Console
+namespace console {
     void time_now() {
         auto now = std::chrono::system_clock::now();
         std::time_t end_time = std::chrono::system_clock::to_time_t(now);
@@ -41,7 +71,7 @@ namespace Console {
     }
 
     template <class T>
-    void log(T message, log_level log_level_ = log_level::Info,
+    static void log(T message, log_level log_level_ = log_level::Info,
              std::string color = Reset,
              std::experimental::source_location const source =
                  std::experimental::source_location::current()) {
@@ -71,6 +101,6 @@ namespace Console {
             << ":" << source.function_name() << ":" << source.line() << Reset;
         std::cout << color << " || " << Reset << message << std::endl;
     }
-}; // namespace Console
+} // namespace console
 
 #endif

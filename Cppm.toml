@@ -1,6 +1,7 @@
 [project]
-version = "1.0.1"
-src = "src/main.cpp"
-edition = "2021"
-include = "include"
 name = "console_log"
+version = "1.0.1"
+edition = "2022"
+include = "include"
+src = "src/main.cpp"
+standard = "17"

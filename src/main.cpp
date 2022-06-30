@@ -1,9 +1,11 @@
-#include "console_log.hpp"
+#include "../include/console_log.hpp"
 #include <iostream>
-using namespace Console;
-using ll = Console::log_level;
+using console::log;
+using ll = log_level;
 
 int main() {
+    Console console = Console("logger.log");
+    console.log("Information");
     log("Information", ll::Info);
     log("Warning", ll::Warning);
     log("Error", ll::Error);
