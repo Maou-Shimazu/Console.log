@@ -1,5 +1,7 @@
 #pragma once
 
+#include <corecrt.h>
+#include <cstdint>
 #ifndef CONSOLE_LOG_HPP
 #define CONSOLE_LOG_HPP
 
@@ -11,6 +13,8 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <thread>
+#include <vector>
 
 using std::experimental::source_location;
 
@@ -32,6 +36,16 @@ enum class log_level : char {
     Success = '+',
     Debug   = '?'
 };
+namespace console {
+    std::vector<size_t> cursed_range(size_t x, size_t y) {
+        std::vector<size_t> result;
+        for (; x <= y; x++) {
+            result.push_back(x);
+        }
+        return result;
+    }
+    template <typename T> auto consume(T v) { return v; }
+} // namespace console
 
 // TODO: shift formatting options from log to this class.
 class Format {
@@ -54,8 +68,24 @@ class Console {
             std::ofstream ost(this->fileH);
     }
     template <typename T> Console* log(T message, Format formatter = Format()) {
-        std::ofstream ost(this->fileH);
-        ost << formatter.default_format(message) << "\n";
+        std::thread thread([this, formatter, message]() {
+            std::ofstream ost(this->fileH, std::ios::app);
+            ost << formatter.default_format(message) << "\n";
+        });
+        thread.join();
+        return this;
+    }
+    template <typename T>
+    Console* log(T message, std::vector<size_t> range,
+                 Format formatter = Format()) {
+        std::thread thread([this, formatter, message, range]() {
+            for (auto i : range) {
+                std::ofstream ost(this->fileH, std::ios::app);
+                ost << formatter.default_format(message) << "\n";
+                console::consume(i); // to ignore unused variable warnings
+            }
+        });
+        thread.join();
         return this;
     }
 }; // class Console

@@ -1,11 +1,17 @@
 #include "../include/console_log.hpp"
 #include <iostream>
 using console::log;
+using console::cursed_range;
 using ll = log_level;
 
 int main() {
-    Console console = Console("logger.log");
-    console.log("Information");
+    Console console1 = Console("logger1.log");
+    for (auto i : cursed_range(0, 1000)) {
+       console1.log("Information " + std::to_string(i));
+    }
+    Console console2 = Console("logger2.log");
+    console2.log("Information ", cursed_range(0, 1000));
+    
     log("Information", ll::Info);
     log("Warning", ll::Warning);
     log("Error", ll::Error);
