@@ -1,8 +1,16 @@
+#define DOCTEST_CONFIG_IMPLEMENT
 #include "../include/console_log.hpp"
 #include <iostream>
+#include <doctest/doctest.h>
+
 using console::log;
 using console::cursed_range;
 using ll = log_level;
+
+TEST_CASE("formatting") {
+    std::string m {"words {yes}"};
+    CHECK(Format().formatter(m) == "yes");
+}
 
 int main() {
     Console console1 = Console("logger1.log");
@@ -19,6 +27,9 @@ int main() {
     log("Debug", ll::Debug);
     log("Default");
     log("Example of a long message with a custom color, Black.", ll::Info, Black);
+
+    doctest::Context context;
+    context.run();
 
     return 0;
 }

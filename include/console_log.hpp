@@ -1,7 +1,4 @@
 #pragma once
-
-#include <corecrt.h>
-#include <cstdint>
 #ifndef CONSOLE_LOG_HPP
 #define CONSOLE_LOG_HPP
 
@@ -51,7 +48,19 @@ namespace console {
 class Format {
   public:
     Format() = default;
-    template <typename T> auto formatter(T content) { return content; }
+    auto formatter(std::string content) {
+        std::string current, end, str;
+        for (auto i = 0; i <= content.length(); i++) {
+            current = content.at(i);     // current character
+            end     = content.at(i + 1); // next character
+            while (current == "{" && end != "}") {
+                current += content.at(i);
+                str += current;
+                i++;
+            }
+        }
+        return current;
+    }
     template <typename T> static auto default_format(T content) {
         return content;
     }
