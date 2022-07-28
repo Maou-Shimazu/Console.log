@@ -51,12 +51,12 @@ class Format {
     auto formatter(std::string content) {
         std::string current, end, str;
         for (auto i = 0; i <= content.length(); i++) {
-            current = content.at(i);     // current character
-            end     = content.at(i + 1); // next character
+            // current = content.at(i);     // current character
+            // end     = content.at(i + 1); // next character
             while (current == "{" && end != "}") {
-                current += content.at(i);
-                str += current;
-                i++;
+                // current += content.at(i);
+                // str += current;
+                // i++;
             }
         }
         return current;
