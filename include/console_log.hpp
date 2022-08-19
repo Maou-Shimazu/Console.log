@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 #ifndef CONSOLE_LOG_HPP
 #define CONSOLE_LOG_HPP
 
@@ -14,17 +15,6 @@
 #include <vector>
 
 using std::experimental::source_location;
-
-const std::string Black     = "\u001b[30m";
-const std::string Red       = "\u001b[31m";
-const std::string Green     = "\u001b[32m";
-const std::string Yellow    = "\u001b[33m";
-const std::string Blue      = "\u001b[34m";
-const std::string Magenta   = "\u001b[35m";
-const std::string Cyan      = "\u001b[36m";
-const std::string White     = "\u001b[37m";
-const std::string Reset     = "\u001b[0m";
-const std::string Underline = "\u001b[4m";
 
 enum class log_level : char {
     Info    = '-',
@@ -42,6 +32,17 @@ namespace console {
         return result;
     }
     template <typename T> auto consume(T v) { return v; }
+    
+    const std::string Black     = "\u001b[30m";
+    const std::string Red       = "\u001b[31m";
+    const std::string Green     = "\u001b[32m";
+    const std::string Yellow    = "\u001b[33m";
+    const std::string Blue      = "\u001b[34m";
+    const std::string Magenta   = "\u001b[35m";
+    const std::string Cyan      = "\u001b[36m";
+    const std::string White     = "\u001b[37m";
+    const std::string Reset     = "\u001b[0m";
+    const std::string Underline = "\u001b[4m";
 } // namespace console
 
 // TODO: shift formatting options from log to this class.
@@ -99,16 +100,16 @@ class Console {
     }
 }; // class Console
 namespace console {
-    inline void time_now() {
+    inline void time_now(std::ostream& os) {
         auto now             = std::chrono::system_clock::now();
         std::time_t end_time = std::chrono::system_clock::to_time_t(now);
         std::tm tn           = *std::localtime(&end_time);
-        std::cout << std::put_time(&tn, "%X");
+        os << std::put_time(&tn, "%X");
     }
 
     template <class T>
     static void log(T message, log_level log_level_ = log_level::Info,
-                    std::string color            = Reset,
+                    std::ostream& os = std::cout, std::string color = Reset,
                     source_location const source = source_location::current()) {
         switch (log_level_) {
         case log_level::Info:
@@ -128,13 +129,12 @@ namespace console {
             break;
         }
 
-        std::cout << color << "[" << static_cast<char>(log_level_) << "] ";
-        time_now();
-        std::cout << " || " << Reset;
-        std::cout
-            << std::filesystem::path(source.file_name()).filename().string()
-            << ":" << source.function_name() << ":" << source.line() << Reset;
-        std::cout << color << " || " << Reset << message << std::endl;
+        os << color << "[" << static_cast<char>(log_level_) << "] ";
+        time_now(os);
+        os << " || " << Reset;
+        os << std::filesystem::path(source.file_name()).filename().string()
+           << ":" << source.function_name() << ":" << source.line() << Reset;
+        os << color << " || " << Reset << message << std::endl;
     }
 } // namespace console
 
